@@ -18,6 +18,7 @@
  */
 package net.sourceforge.subsonic.ajax;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.SocketException;
@@ -29,6 +30,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -49,6 +54,34 @@ import net.sourceforge.subsonic.util.StringUtil;
 public class LyricsService {
 
     private static final Logger LOG = Logger.getLogger(LyricsService.class);
+    
+    /**
+     * Returns lyrics for the given file path or (song and artist).
+     *
+     * @param artist The artist.
+     * @param song   The song.
+     * @param path   The file path.
+     * @return The lyrics, never <code>null</code> .
+     */
+    public LyricsInfo getLyrics(String artist, String song, String path) {
+        LyricsInfo lyrics = null;
+        if(path != null) {
+            File file = new File(path);
+            try {
+                AudioFile audioFile = AudioFileIO.read(file);
+                Tag tag = audioFile.getTag();
+                if (tag != null) {
+                    String tagLyrics = StringUtils.trimToNull(tag.getFirst(FieldKey.LYRICS));
+                    if(tagLyrics != null) {
+                        lyrics = new LyricsInfo(tagLyrics, artist, song);
+                    }
+                }
+            } catch (Exception x) {
+                LOG.warn("Failed to get lyrics from tags for song '" + song + "'.", x);
+            }
+        }
+        return lyrics == null ? getLyrics(artist, song) : lyrics;
+    }
 
     /**
      * Returns lyrics for the given song and artist.

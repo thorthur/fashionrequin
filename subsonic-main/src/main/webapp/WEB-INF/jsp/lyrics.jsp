@@ -12,15 +12,15 @@
         dwr.engine.setErrorHandler(null);
 
         function init() {
-            getLyrics('${model.artist}', '${model.song}');
+            getLyrics('${model.artist}', '${model.song}', '${model.path}');
         }
 
-        function getLyrics(artist, song) {
+        function getLyrics(artist, song, path) {
             $("wait").style.display = "inline";
             $("lyrics").style.display = "none";
             $("noLyricsFound").style.display = "none";
             $("tryLater").style.display = "none";
-            lyricsService.getLyrics(artist, song, getLyricsCallback);
+            lyricsService.getLyrics(artist, song, path, getLyricsCallback);
         }
 
         function getLyricsCallback(lyricsInfo) {
@@ -41,7 +41,7 @@
         }
 
         function search() {
-            getLyrics(dwr.util.getValue('artist'), dwr.util.getValue('song'));
+            getLyrics(dwr.util.getValue('artist'), dwr.util.getValue('song'), null);
         }
     </script>
 

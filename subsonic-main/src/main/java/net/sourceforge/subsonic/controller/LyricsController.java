@@ -38,6 +38,7 @@ public class LyricsController extends ParameterizableViewController {
 
         map.put("artist", request.getParameter("artist"));
         map.put("song", request.getParameter("song"));
+        map.put("path", request.getParameter("path"));
 
         ModelAndView result = super.handleRequestInternal(request, response);
         result.addObject("model", map);

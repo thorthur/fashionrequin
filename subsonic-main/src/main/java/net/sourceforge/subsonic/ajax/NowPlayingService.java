@@ -118,7 +118,8 @@ public class NowPlayingService {
             String lyricsUrl = null;
             if (!mediaFile.isVideo()) {
                 lyricsUrl = url.replaceFirst("/dwr/.*", "/lyrics.view?artistUtf8Hex=" + StringUtil.utf8HexEncode(artist) +
-                                                        "&songUtf8Hex=" + StringUtil.utf8HexEncode(title));
+                                                        "&songUtf8Hex=" + StringUtil.utf8HexEncode(title) +
+                                                        "&pathUtf8Hex=" + StringUtil.utf8HexEncode(mediaFile.getPath()));
             }
             String coverArtUrl = url.replaceFirst("/dwr/.*", "/coverArt.view?size=60&id=" + mediaFile.getId());
 
